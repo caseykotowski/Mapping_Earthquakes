@@ -2,7 +2,7 @@
 console.log("working");
 
 // Create map object with center and zoom level
-let map = L.map('mapid').setView([40.7, -94.5], 14)
+let map = L.map('mapid').setView([40.7, -94.5], 4)
 
 L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
@@ -13,12 +13,17 @@ L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
     accessToken: API_KEY
 }).addTo(map);
 
-//Marker for Los Angeles, California
-// var marker = L.marker([34.0522, -118.2437]).addTo(map);
+// get cities data 
+let cityData = cities;
 
-L.circleMarker([34.0522, -118.2437], {
-    color: 'black',
-    fillColor: '#ffffa1',
-    fillOpacity: 0.5,
-    radius: 300
-}).addTo(map);
+// Loop through the cities array and create one marker for each city
+  cityData.forEach(city => {
+      console.log(city)
+      L.circlemarker(city.location, {
+          color: "orange",
+          fillColor: "oranage",
+          fillOpacity: 0.5,
+          radius: city.population/200000
+      }).bindPopup("<h2>" + city.city + ", " + city.state + "</h2><hr><h3>Population " + city.population.toLocaleString() + "</h3>").addTo(map);
+
+    });
