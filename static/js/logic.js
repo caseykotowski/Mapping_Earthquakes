@@ -1,10 +1,10 @@
 // Add console.log to check to see if our code is working.
 console.log("working");
 
-let streets = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+let light = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
     maxZoom: 18,
-    id: 'satellite-streets-v11',
+    id: 'satellite-light-v10',
     tileSize: 512,
     zoomOffset: -1,
     accessToken: API_KEY
@@ -19,7 +19,7 @@ attribution: 'Map data © <a href="https://www.openstreetmap.org/">OpenStreetMap
 
 // Create base layer that holds both maps
 let baseMaps = {
-    Street: streets,
+    Light: light,
     Dark: dark
 };
 
@@ -27,18 +27,29 @@ let baseMaps = {
 let map = L.map('mapid', {
     center: [30, 30], 
     zoom: 2,
-    layers: [streets]
+    layers: [light]
 });
 
 // Pass maps layers into layers control and add layers contol to map
 L.control.layers(baseMaps).addTo(map);
 
-// Accessing the airport GeoJSON URL
-let airportData = "https://raw.githubusercontent.com/<caseykotowski>/Mapping_Earthquakes/main/majorAirports.json";
+// Accessing the Toronto airline routes GeoJSON URL.
+let torontoData = "https://raw.githubusercontent.com/caseykotowski/Mapping_Earthquakes/main/torontoRoutes.json";
 
 // Grabbing our GeoJSON data
-d3.json(airportData).then(function(data) {
+d3.json(torontoData).then(function(data) {
     console.log(data);
     // Creating GeoJSON layer w/ retrieved data
-    L.geoJson(data).addTo(map);
+    L.geoJson(data, {
+        style: myStyle,
+        onEachFeature: function(feature, layer) {
+            layer.bindPopup("<h3> airline: " + feature.properties.airline + "</h3> <hr><h3> Destination: " + feature.properties.dst + "</h3>");
+        }
+}).addTo(map);
 });
+
+// Create style for the lines
+let myStyle = {
+    color: "#ffffa1",
+    weight: 2
+}
